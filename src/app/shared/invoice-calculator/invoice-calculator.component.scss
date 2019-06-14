@@ -1,0 +1,19 @@
+@import 'index';
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @include relational-height(100vh, $headerMobileHeight);
+
+  @include media-breakpoint-up(md) {
+    @include relational-height(100vh, $headerTabletHeight);
+  }
+  @include media-breakpoint-up(lg) {
+    @include relational-height(100vh, $headerHeight);
+  }
+  app-layout-items-2 {
+    animation: fadeIn 250ms forwards;
+    animation-delay: 500ms;
+  }
+}

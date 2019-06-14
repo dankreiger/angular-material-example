@@ -1,0 +1,25 @@
+// material design
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Bootstrap 4 Grid
+@import '~bootstrap/scss/bootstrap-grid';
+
+// Partials
+@import 'index.scss';
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.container {
+  @include make-container();
+  @include make-container-max-widths(
+    $max-widths: $container-max-widths,
+    $breakpoints: $grid-breakpoints
+  );
+}

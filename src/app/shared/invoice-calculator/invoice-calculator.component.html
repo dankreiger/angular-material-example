@@ -1,0 +1,29 @@
+<!-- loading indicator -->
+<mat-spinner *ngIf="!customerData; else items2Layout"></mat-spinner>
+
+<!-- layout -->
+<ng-template #items2Layout let-itemGroup="itemGroup">
+  <app-layout-items-2 class="container">
+    <ng-template #itemOne *ngIf="customerData as itemData">
+      <ng-container
+        [ngTemplateOutlet]="firstItem"
+        [ngTemplateOutletContext]="{ itemData: customerData }"
+      ></ng-container>
+    </ng-template>
+    <ng-template #itemTwo *ngIf="customerData as itemData">
+      <ng-container
+        [ngTemplateOutlet]="secondItem"
+        [ngTemplateOutletContext]="{ itemData: itemData }"
+      ></ng-container>
+    </ng-template>
+  </app-layout-items-2>
+</ng-template>
+
+<!-- templates -->
+<ng-template #firstItem let-itemData="itemData" let-layoutData="layoutData">
+  <app-data-table [tableData]="itemData"></app-data-table>
+</ng-template>
+
+<ng-template #secondItem let-itemData="itemData" let-layoutData="layoutData">
+  <div class="datepicker">datepicker</div>
+</ng-template>

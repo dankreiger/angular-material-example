@@ -1,0 +1,25 @@
+// boostrap config
+$grid-columns: 12 !default;
+$grid-gutter-width: 30px !default;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 480px,
+  md: 720px,
+  lg: 968px,
+  xl: 1280px,
+  xxl: 1800px
+);
+
+$container-max-widths: (
+  sm: 460px,
+  md: 700px,
+  lg: 1000px,
+  xl: 1240px,
+  xs: 1700px
+);
+
+// constants
+$headerMobileHeight: 56px;
+$headerTabletHeight: 64px;
+$headerHeight: 72px;

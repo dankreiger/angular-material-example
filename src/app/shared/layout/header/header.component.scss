@@ -1,0 +1,11 @@
+@import 'index';
+:host {
+  mat-toolbar {
+    display: flex;
+    justify-content: space-between;
+    height: $headerMobileHeight;
+    @include media-breakpoint-up(lg) {
+      height: $headerHeight;
+    }
+  }
+}

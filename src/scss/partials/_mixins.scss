@@ -1,0 +1,8 @@
+// bootstrap mixins
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~bootstrap/scss/mixins/grid-framework';
+@import '~bootstrap/scss/mixins/grid';
+
+@mixin relational-height($height, $offsetHeight) {
+  height: calc(#{$height} - #{$offsetHeight});
+}
