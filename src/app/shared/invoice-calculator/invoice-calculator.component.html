@@ -1,29 +1,65 @@
 <!-- loading indicator -->
-<mat-spinner *ngIf="!customerData; else items2Layout"></mat-spinner>
+<mat-spinner *ngIf="!data; else invoiceCalculator"></mat-spinner>
 
 <!-- layout -->
-<ng-template #items2Layout let-itemGroup="itemGroup">
-  <app-layout-items-2 class="container">
-    <ng-template #itemOne *ngIf="customerData as itemData">
+<ng-template #invoiceCalculator>
+  <!-- TODO: button container should be converted into reusable one item layout -->
+  <div class="container submit-button-container">
+    <div class="row" *ngIf="showDetailsButtonVisible">
+      <div class="col d-flex justify-content-end">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="showCustomerDetails()"
+        >
+          Show Customer Details
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <app-layout-items-2
+    #layoutItems2
+    class="container"
+    [itemOneColClasses]="itemOneColClasses"
+    [itemTwoColClasses]="itemTwoColClasses"
+  >
+    <ng-template #itemOne>
       <ng-container
         [ngTemplateOutlet]="firstItem"
-        [ngTemplateOutletContext]="{ itemData: customerData }"
+        [ngTemplateOutletContext]="{ data: data }"
       ></ng-container>
     </ng-template>
-    <ng-template #itemTwo *ngIf="customerData as itemData">
+    <ng-template #itemTwo>
       <ng-container
         [ngTemplateOutlet]="secondItem"
-        [ngTemplateOutletContext]="{ itemData: itemData }"
+        [ngTemplateOutletContext]="{ data: data }"
       ></ng-container>
     </ng-template>
   </app-layout-items-2>
 </ng-template>
 
-<!-- templates -->
-<ng-template #firstItem let-itemData="itemData" let-layoutData="layoutData">
-  <app-data-table [tableData]="itemData"></app-data-table>
+<!-- components -->
+<ng-template #firstItem let-apiPath="apiPath">
+  <app-data-table
+    #dataTable
+    (itemSelected)="toggleFormButton($event)"
+    [data]="data"
+  ></app-data-table>
 </ng-template>
 
-<ng-template #secondItem let-itemData="itemData" let-layoutData="layoutData">
-  <div class="datepicker">datepicker</div>
+<ng-template #secondItem>
+  <app-date-picker *ngIf="!detailsVisible"></app-date-picker>
+
+  <!-- TODO create order details component -->
+  <mat-card *ngIf="detailsVisible" class="row">
+    <div class="col-12">Date range: {{ orderDetails.dateRange }}</div>
+    <div class="col-12">Number of days: {{ orderDetails.numberOfDays }}</div>
+    <div class="col-12">
+      Number of orders: {{ orderDetails.numberOfOrders }}
+    </div>
+    <div class="col-12">
+      Total amount to invoice: {{ orderDetails.totalAmountToInvoice }}
+    </div>
+  </mat-card>
 </ng-template>

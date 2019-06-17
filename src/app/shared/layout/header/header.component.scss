@@ -1,5 +1,7 @@
 @import 'index';
+
 :host {
+  display: block;
   mat-toolbar {
     display: flex;
     justify-content: space-between;
@@ -7,5 +9,9 @@
     @include media-breakpoint-up(lg) {
       height: $headerHeight;
     }
+  }
+
+  .header-right {
+    display: flex;
   }
 }

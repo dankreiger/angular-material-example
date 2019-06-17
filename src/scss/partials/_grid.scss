@@ -1,0 +1,10 @@
+// Bootstrap 4 Grid
+@import '~bootstrap/scss/bootstrap-grid';
+
+.container {
+  @include make-container();
+  @include make-container-max-widths(
+    $max-widths: $container-max-widths,
+    $breakpoints: $grid-breakpoints
+  );
+}

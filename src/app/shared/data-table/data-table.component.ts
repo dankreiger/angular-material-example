@@ -1,14 +1,14 @@
 import {
   Component,
-  AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Input
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectorRef
 } from '@angular/core';
-import { ApiService } from '../../core/services';
-import { HttpParams } from '@angular/common/http';
 import { MatTableDataSource } from '@angular/material/table';
-import { Customer } from 'src/app/core/models/Customer.model';
+import { DataTable } from 'src/app/core/models/DataTable.model';
+import { ApiResource } from 'src/app/core/models/ApiResource.model';
 
 @Component({
   selector: 'app-data-table',
@@ -16,32 +16,52 @@ import { Customer } from 'src/app/core/models/Customer.model';
   styleUrls: ['./data-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DataTableComponent implements AfterViewInit {
-  @Input() tableData: object;
+export class DataTableComponent {
+  constructor(private cdr: ChangeDetectorRef) {}
+  private _tableData: MatTableDataSource<ApiResource>;
+  private _columnsToDisplay: string[] = [];
 
-  public displayedColumns: string[] = [];
-  public columnsToDisplay: string[] = [];
-  public customerData: MatTableDataSource<Customer>;
+  @Output() itemSelected: EventEmitter<ApiResource> = new EventEmitter<
+    ApiResource
+  >();
 
-  constructor(private apiService: ApiService, private cdr: ChangeDetectorRef) {}
+  @Input() set data(data: DataTable) {
+    console.log('data', data);
+    this._tableData = data.tableData;
+    this._columnsToDisplay = data.columnsToDisplay;
+  }
+
+  get tableData(): MatTableDataSource<ApiResource> {
+    return this._tableData;
+  }
+
+  get columnsToDisplay(): string[] {
+    return this._columnsToDisplay;
+  }
 
   applyFilter(filterValue: string) {
-    this.customerData.filter = filterValue.trim().toLowerCase();
+    this.tableData.filter = filterValue.trim().toLowerCase();
   }
 
-  onRowClicked(row) {
-    console.log(row);
+  updateItems(currentRow) {
+    const newData = this.tableData.filteredData.map(row => {
+      if (row !== currentRow) {
+        row.selected = false;
+      }
+      return row;
+    });
+
+    this._tableData = new MatTableDataSource(newData);
   }
 
-  ngAfterViewInit() {
-    const fromObject = { start_date: '2015-11-02', end_date: '2016_02_01' };
-    this.apiService
-      .get('/customers', new HttpParams({ fromObject }))
-      .subscribe((res: Customer[]) => {
-        this.displayedColumns = Object.keys(res[0]);
-        this.columnsToDisplay = this.displayedColumns.slice();
-        this.customerData = new MatTableDataSource(res);
-        this.cdr.markForCheck();
-      });
+  onRowClicked(row: ApiResource) {
+    row.selected = !row.selected;
+    this.updateItems(row);
+    this.itemSelected.emit(row);
+  }
+
+  reInit(data: DataTable) {
+    this.data = data;
+    this.cdr.markForCheck();
   }
 }

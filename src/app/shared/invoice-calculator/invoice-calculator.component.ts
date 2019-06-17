@@ -1,13 +1,22 @@
 import {
   Component,
-  AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  Input,
+  AfterViewInit,
+  ChangeDetectorRef,
+  ViewChild
 } from '@angular/core';
-import { ApiService } from '../../core/services';
+import { DataTable } from 'src/app/core/models/DataTable.model';
+import { DataTableService } from 'src/app/core/services/data-table.service';
+import { ApiService } from 'src/app/core/services';
 import { HttpParams } from '@angular/common/http';
-import { MatTableDataSource } from '@angular/material/table';
+import {
+  itemOneColClasses,
+  itemTwoColClasses
+} from './invoice-calculator.data';
 import { Customer } from 'src/app/core/models/Customer.model';
+import { Order, OrderDetails } from 'src/app/core/models/Order.model';
+import { OrderService } from 'src/app/core/services/order.service';
 
 @Component({
   selector: 'app-invoice-calculator',
@@ -16,27 +25,67 @@ import { Customer } from 'src/app/core/models/Customer.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InvoiceCalculatorComponent implements AfterViewInit {
-  constructor(private apiService: ApiService, private cdr: ChangeDetectorRef) {}
-  displayedColumns: string[] = ['name', 'weight', 'symbol', 'position'];
-  columnsToDisplay: string[] = this.displayedColumns.slice();
-  customerData: MatTableDataSource<Customer>;
+  @Input() apiPath: string;
+  public data: DataTable;
+  public orderDetails: OrderDetails;
+  public currentItem: Customer;
+  public showDetailsButtonVisible = false;
+  public itemOneColClasses = itemOneColClasses;
+  public itemTwoColClasses = itemTwoColClasses;
+  public detailsVisible = false;
 
-  applyFilter(filterValue: string) {
-    this.customerData.filter = filterValue.trim().toLowerCase();
+  @ViewChild('dataTable', { static: false }) dataTable;
+  @ViewChild('layoutItems2', { static: false }) layoutItems2;
+
+  constructor(
+    private apiService: ApiService,
+    private dataTableService: DataTableService,
+    private orderService: OrderService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  toggleFormButton(item: Customer) {
+    this.showDetailsButtonVisible = item.selected;
+    if (item.selected) {
+      this.currentItem = item;
+    } else {
+      this.currentItem = null;
+    }
   }
 
-  onRowClicked(row) {
-    console.log(row);
+  showCustomerDetails() {
+    console.log(this.currentItem);
+    const fromObject = { start_date: '2015-11-02', end_date: '2016_02_01' };
+
+    // TODO - navigate page and perform http via resolver, maybe
+    this.apiService
+      .get(`/orders/${this.currentItem.id}`, new HttpParams({ fromObject }))
+      .subscribe((res: Order[]) => {
+        console.log(res);
+        this.currentItem = null;
+        this.showDetailsButtonVisible = false;
+        this.itemOneColClasses = ['col-12', 'order-1'];
+        this.itemTwoColClasses = ['col-12'];
+        this.data = this.dataTableService.prepareOrderTableData(res);
+        this.orderDetails = this.orderService.prepareOrderDetails(res);
+        // this.cdr.detectChanges();
+        this.detailsVisible = true;
+        this.layoutItems2.reInit(
+          this.itemOneColClasses,
+          this.itemTwoColClasses
+        );
+        this.dataTable.reInit(this.data);
+      });
   }
 
   ngAfterViewInit() {
     const fromObject = { start_date: '2015-11-02', end_date: '2016_02_01' };
+
+    // unsubscribe not necessary for httpclient
     this.apiService
-      .get('/customers', new HttpParams({ fromObject }))
+      .get(this.apiPath, new HttpParams({ fromObject }))
       .subscribe((res: Customer[]) => {
-        this.displayedColumns = Object.keys(res[0]);
-        this.columnsToDisplay = this.displayedColumns.slice();
-        this.customerData = new MatTableDataSource(res);
+        this.data = this.dataTableService.normalizeCustomerData(res);
         this.cdr.markForCheck();
       });
   }

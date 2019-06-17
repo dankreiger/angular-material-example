@@ -6,12 +6,15 @@ import { RouterModule } from '@angular/router';
 
 import {
   MatInputModule,
-  MatPaginatorModule,
   MatProgressSpinnerModule,
-  MatSortModule,
   MatTableModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatDatepickerModule,
+  MatButtonModule,
+  MatCardModule
 } from '@angular/material';
+
+import { SatDatepickerModule, SatNativeDateModule } from 'saturn-datepicker';
 
 /* layouts */
 import { Items2Component } from './layout';
@@ -19,6 +22,7 @@ import { Items2Component } from './layout';
 /* components */
 import { InvoiceCalculatorComponent } from '../shared/invoice-calculator/invoice-calculator.component';
 import { DataTableComponent } from './data-table/data-table.component';
+import { DatePickerComponent } from './date-picker/date-picker.component';
 
 @NgModule({
   imports: [
@@ -27,16 +31,20 @@ import { DataTableComponent } from './data-table/data-table.component';
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule,
+    SatDatepickerModule,
+    SatNativeDateModule,
+    MatDatepickerModule,
     MatInputModule,
     MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
+    MatButtonModule,
+    MatCardModule,
     MatProgressSpinnerModule
   ],
   declarations: [
     Items2Component,
     InvoiceCalculatorComponent,
-    DataTableComponent
+    DataTableComponent,
+    DatePickerComponent
   ],
   exports: [
     CommonModule,

@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
+
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ApiParams } from '../models/ApiParams.model';
 
-@Injectable()
+import { environment } from '../../../environments/environment';
+import { CoreModule } from '../core.module';
+
+@Injectable({ providedIn: CoreModule })
 export class ApiService {
   constructor(private http: HttpClient) {}
 

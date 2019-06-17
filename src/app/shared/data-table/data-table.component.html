@@ -1,16 +1,17 @@
-<div *ngIf="customerData" class="invoice-calculator-table-container">
+<div *ngIf="tableData" class="invoice-calculator-table-container">
   <mat-form-field>
     <input
       matInput
       (keyup)="applyFilter($event.target.value)"
       placeholder="Filter"
+      class="table-input-filter"
     />
   </mat-form-field>
 
-  <table mat-table [dataSource]="customerData" class="mat-elevation-z8">
+  <table mat-table [dataSource]="tableData" class="mat-elevation-z8 data-table">
     <ng-container
       [matColumnDef]="column"
-      *ngFor="let column of displayedColumns"
+      *ngFor="let column of columnsToDisplay"
     >
       <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
       <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
@@ -21,6 +22,7 @@
       mat-row
       *matRowDef="let row; columns: columnsToDisplay"
       (click)="onRowClicked(row)"
+      [class.selected]="row.selected"
     ></tr>
   </table>
 </div>

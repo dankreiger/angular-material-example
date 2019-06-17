@@ -3,17 +3,40 @@
 :host {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
   @include relational-height(100vh, $headerMobileHeight);
 
+  // !!! TODO  convert submit button container into one item resusable layout
+  .submit-button-container {
+    height: 70px;
+    margin: 20px 0;
+    .row {
+      height: 100%;
+    }
+    button {
+      height: 100%;
+      min-width: 250px;
+    }
+  }
+  app-layout-items-2 {
+    flex-grow: 0.5;
+    animation: fadeIn 250ms;
+  }
   @include media-breakpoint-up(md) {
     @include relational-height(100vh, $headerTabletHeight);
+    .submit-button-container {
+      margin-top: 50px;
+      margin-bottom: 50px;
+    }
+    .submit-button-row {
+      top: $headerTabletHeight;
+    }
   }
   @include media-breakpoint-up(lg) {
     @include relational-height(100vh, $headerHeight);
-  }
-  app-layout-items-2 {
-    animation: fadeIn 250ms forwards;
-    animation-delay: 500ms;
+    .submit-button-row {
+      top: $headerHeight;
+    }
   }
 }
